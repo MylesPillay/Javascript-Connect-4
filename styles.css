@@ -1,0 +1,51 @@
+
+html {
+    background-color: cornsilk;
+    display: flex;
+    justify-content: center;
+}
+
+.grid {
+    border: 1px solid black;
+    border-radius: 5%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 560px;
+    width: 560px;
+    padding: 20px;
+    padding-bottom: 2px;
+    background-color: burlywood;
+  
+}
+
+.slot{
+    height: 72px;
+    width: 72px;
+    border: solid black 1px;
+    border-radius: 50%;
+    background-color: cornsilk;
+}
+
+.bottom {
+    border: none;
+    border-top: black solid 1px;
+}
+
+.player-one {
+    background-color: red;
+    border-radius: 50%;
+}
+
+.player-two {
+    background-color: blue;
+    border-radius: 50%;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 100px;
+}

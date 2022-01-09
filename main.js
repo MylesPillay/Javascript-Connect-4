@@ -36,6 +36,178 @@ let yellowTurn = true;
 
 
 
+//Functions
+const getClassListArray =(slot) => {
+    const classList = slot.classList;
+    return [...classList];
+};
+const getSlotLocation = (slot) => {
+    const classList = getClassListArray(slot);
+    const rowClass = classList.find(slotClass => slotClass.includes('row'));
+    const colClass = classList.find(slotClass => slotClass.includes('col'));
+    const rowIndex = rowClass[''];
+    const colIndex = colClass[''] ;  
+    const rowNumber = parseInt(rowIndex, 10); 
+    const colNumber = parseInt(colIndex, 10);  
+
+    return [rowNumber, colNumber]; //this gives us the column index as an integer, to be used for the coin hover in top hidden row.
+};
+
+const getFirstAvailableColumnSlot = (colIndex) => {
+const collumn = columns[colIndex];
+const columnNoTopSlot = column.slice(0, 6);
+
+for (const slot of columnNoTopSlot) {
+    const classList = getClassListArray(slot);
+    if (!classList.includes('yellow') && !classList.indluced('red')) {
+        return slot;
+    }
+}
+return null;
+};
+
+const getSlotColor = (slot) => {
+    const classList = getClassListArray(slot);
+    if (classList.includes('yellow')) return 'yellow';
+    if (classList.includes('red')) return 'red';
+    return null;
+};
+
+const switchSlotHover = (colIndex) => {
+    const topHiddenSlot = topHiddenSlots[colIndex];
+        topHiddenSlot.classList.remove(yellowTurn ? 'yellow' : 'red');
+};
+
+
+const checkWinningSlots = (cells) => {
+    if(cells.length <4) return;
+        gameActive = false;
+        for (const cell of cells) {
+            cell.classList.add('win');
+        }
+        statusSpan.textContent = `${yellowTurn ? 'yellow' : 'red'} has won!`
+        };
+     
+
+// Checking game status to determine if 4 in a row for winner
+
+const checkGameStatus = (slot) => {
+     const color = getSlotColor(slot);
+     if (!color) return 
+     const [rowIndex, colIndex] = getSlotLocation(slot)
+
+     //Horizontal check method
+ let winningSlots = [slot];
+ let rowToCheck = cell
+ let colToCheck = colIndex -1;
+ while (colToCheck >= 0) {
+     const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+    if (getSlotColor(slotToCheck) === color) {
+        winningSlots.push(cellToCheck);
+        colToCheck--;
+ } else{
+     break;
+ }
+}
+colToCheck = colIndex +1;
+ while (colToCheck <= 6) {
+     const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+    if (getSlotColor(slotToCheck) === color) {
+        winningSlots.push(cellToCheck);
+        colToCheck--;
+ } else{
+     break;
+ }
+}
+
+checkWinningSlots(winningSlots);
+// if (winningSlots.legnth>= 4) {
+   // gameActive = false;
+    // we also want to get all of the winning cells and add a 'win'class to highlight location of 4 in a row win
+
+    let winningSlots = [slot];
+    let rowToCheck = cell
+    let colToCheck = colIndex -1;
+    while (colToCheck >= 0) {
+        const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+       if (getSlotColor(slotToCheck) === color) {
+           winningSlots.push(cellToCheck);
+           colToCheck--;
+    } else{
+        break;
+    }
+   }
+   colToCheck = colIndex +1;
+    while (colToCheck <= 6) {
+        const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+       if (getSlotColor(slotToCheck) === color) {
+           winningSlots.push(cellToCheck);
+           colToCheck--;
+    } else{
+        break;
+    }
+   }
+   
+   checkWinningSlots(winningSlots);
+}
+// Event Handlers
+
+const handleSlotMouseOver = (e) => {
+    const slot = e.target;
+    
+    const [rowIndex, colIndex] = getSlotLocation(slot);
+    const topHiddenSlot = topHiddenSlots[colIndex];
+        topHiddenSlot.classList.add(yellowTurn ? 'yellow' : 'red');
+    }; 
+    const handleSlotMouseOff = (e) => {
+        const cell = e.target;
+        const [rowIndex, colIndex] = getSlotLocation(slot);
+        switchSlotHover(colIndex)
+    };
+
+const handleSlotClick = (e) => {
+    const slot = e.target;
+    const [rowIndex, colIndex] = getSlotLocation(slot);
+   
+    const availableSlot = getFirstAvailableColumnSlot(colIndex);  // if the cell is full/ includes 'red yellow' then returns null
+    if(!availableSlot) return;
+
+    availableSlot.classList.add(yellowTurn ? 'yellow' : 'red');
+    checkGameSatus(availableSlot)
+
+    yellowTurn =!yellowTurn; // this will flip the colour of the coin for next players turn, also need to add event handler for flipping the top row hover.  
+    switchSlotHover(colIndex);
+
+    if(gameActive) {}
+    const topHiddenSlot = topHiddenSlots[colIndex];
+    topHiddenSlot.classList.add(yellowTurn ? 'yellow' : 'red');
+    }
+};
+
+// Adding Event Listeners   
+    //loop created to loop through array of row arrays
+for(const row of rows) {
+    for(const slot of row) {
+        slot.addEventListener('mouseover', handleSlotMouseOver);
+        slot.addEventListener('mouseout', handleSlotMouseOff);
+        slot.addEventListener('click', handleSlotClick);
+
+    }
+}
+
+resetButton.addEventListened('click', () => {
+    for (const row of rows) {
+        for (const slot of row) {
+            cell.classList.remove('red');
+            cell.classList.remove('yellow');
+            cell.classList.remove('win');
+        }
+    }
+    gameIsLive = true;
+    yellowTurn = true;
+    statusSpan.textContent = '';
+} )
+
 $(document).ready(function() {
     var player = 1;
     var winner = 0;
@@ -59,32 +231,5 @@ $(document).ready(function() {
                 player *= -1;  // this should change between each player at end of each click
             }
         });
-    });
-
-        function isValid(n) {
-            var id = parseInt(n);
-
-            if($("#" + id).attribute("data-player") === "0"){
-                if(id >= 35){
-                    return true;
-                }
-                //row below+7
-                if($("#" + (id +7)).attribute("data-player") !== 0){
-                    return true;
-                }
-            }   
-            return false;
-        }
     })
-
-
-/*
-
-// 7 buttons designating which column counter dropped into - so once button clicked only need to add one new object into one array each time. 
-//
-
-//add event listener for onclick of the seven buttons to designate a column. 
-
-// need 3 loops for checking wins - 4 in a row. one loop for horizontal, one loop for vertical. one loop for diagonal.
-
-*/
+})};

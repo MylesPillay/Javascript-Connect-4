@@ -79,14 +79,16 @@ const switchSlotHover = (colIndex) => {
 };
 
 
-const checkWinningSlots = (cells) => {
-    if(cells.length <4) return;
+const checkWinningSlots = (slots) => {
+    if(slots.length <4) return false;
         gameActive = false;
-        for (const cell of cells) {
-            cell.classList.add('win');
+        for (const slot of slots) {
+            slot.classList.add('win');
         }
         statusSpan.textContent = `${yellowTurn ? 'yellow' : 'red'} has won!`
-        };
+       
+     return true;
+    };
      
 
 // Checking game status to determine if 4 in a row for winner
@@ -98,12 +100,12 @@ const checkGameStatus = (slot) => {
 
      //Horizontal check method
  let winningSlots = [slot];
- let rowToCheck = cell
+ let rowToCheck = rowIndex
  let colToCheck = colIndex -1;
  while (colToCheck >= 0) {
-     const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+     const slotToCheck = rows[rowToCheck][colToCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
     if (getSlotColor(slotToCheck) === color) {
-        winningSlots.push(cellToCheck);
+        winningSlots.push(slotToCheck);
         colToCheck--;
  } else{
      break;
@@ -117,39 +119,41 @@ colToCheck = colIndex +1;
         colToCheck--;
  } else{
      break;
+ }  
+}
+
+let  hasConnectedFour = checkWinningSlots(winningSlots);
+if (hasConnectedFour) return;
+
+// Vertical Win Check Method
+
+ let winningSlots = [slot];
+ let rowToCheck = rowIndex
+ let colToCheck = colIndex -1;
+ while (colToCheck >= 0) {
+     const slotToCheck = rows[rowToCheck][colTowCheck];
+    if (getSlotColor(slotToCheck) === color) {
+        winningSlots.push(slotToCheck);
+        colToCheck--;
+ } else{
+     break;
  }
 }
-
-checkWinningSlots(winningSlots);
-// if (winningSlots.legnth>= 4) {
-   // gameActive = false;
-    // we also want to get all of the winning cells and add a 'win'class to highlight location of 4 in a row win
-
-    let winningSlots = [slot];
-    let rowToCheck = cell
-    let colToCheck = colIndex -1;
-    while (colToCheck >= 0) {
-        const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
-       if (getSlotColor(slotToCheck) === color) {
-           winningSlots.push(cellToCheck);
-           colToCheck--;
-    } else{
-        break;
-    }
-   }
-   colToCheck = colIndex +1;
-    while (colToCheck <= 6) {
-        const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
-       if (getSlotColor(slotToCheck) === color) {
-           winningSlots.push(cellToCheck);
-           colToCheck--;
-    } else{
-        break;
-    }
-   }
-   
-   checkWinningSlots(winningSlots);
+colToCheck = colIndex +1;
+ while (colToCheck <= 6) {
+     const slotToCheck = rows[rowToCheck][colTowCheck];
+    if (getSlotColor(slotToCheck) === color) {
+        winningSlots.push(slotToCheck);
+        colToCheck--;
+ } else{
+     break;
+ }  
 }
+
+let  hasConnectedFour = checkWinningSlots(winningSlots);
+if (hasConnectedFour) return;
+
+
 // Event Handlers
 
 const handleSlotMouseOver = (e) => {
@@ -160,7 +164,7 @@ const handleSlotMouseOver = (e) => {
         topHiddenSlot.classList.add(yellowTurn ? 'yellow' : 'red');
     }; 
     const handleSlotMouseOff = (e) => {
-        const cell = e.target;
+        const slot = e.target;
         const [rowIndex, colIndex] = getSlotLocation(slot);
         switchSlotHover(colIndex)
     };
@@ -198,9 +202,9 @@ for(const row of rows) {
 resetButton.addEventListened('click', () => {
     for (const row of rows) {
         for (const slot of row) {
-            cell.classList.remove('red');
-            cell.classList.remove('yellow');
-            cell.classList.remove('win');
+            slot.classList.remove('red');
+            slot.classList.remove('yellow');
+            slot.classList.remove('win');
         }
     }
     gameIsLive = true;

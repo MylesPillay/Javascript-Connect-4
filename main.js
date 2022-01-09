@@ -100,7 +100,7 @@ const checkGameStatus = (slot) => {
 
      //Horizontal check method
  let winningSlots = [slot];
- let rowToCheck = rowIndex
+ let rowToCheck = rowIndex;
  let colToCheck = colIndex -1;
  while (colToCheck >= 0) {
      const slotToCheck = rows[rowToCheck][colToCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
@@ -113,10 +113,10 @@ const checkGameStatus = (slot) => {
 }
 colToCheck = colIndex +1;
  while (colToCheck <= 6) {
-     const slotToCheck = rows[rowToCheck][colTowCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
+     const slotToCheck = rows[rowToCheck][colToCheck];
     if (getSlotColor(slotToCheck) === color) {
-        winningSlots.push(cellToCheck);
-        colToCheck--;
+        winningSlots.push(slotToCheck);
+        colToCheck++;
  } else{
      break;
  }  
@@ -128,28 +128,61 @@ if (hasConnectedFour) return;
 // Vertical Win Check Method
 
  let winningSlots = [slot];
- let rowToCheck = rowIndex
- let colToCheck = colIndex -1;
- while (colToCheck >= 0) {
-     const slotToCheck = rows[rowToCheck][colTowCheck];
+ let rowToCheck = rowIndex -1;  // this checks from bottom to top.
+ let colToCheck = colIndex;
+ while (rowToCheck >= 0) {
+     const slotToCheck = rows[rowToCheck][colToCheck];
     if (getSlotColor(slotToCheck) === color) {
         winningSlots.push(slotToCheck);
-        colToCheck--;
+        rowToCheck--; //-- means to decrement. 
  } else{
      break;
  }
 }
-colToCheck = colIndex +1;
- while (colToCheck <= 6) {
-     const slotToCheck = rows[rowToCheck][colTowCheck];
+rowToCheck = rowIndex+1;
+ while (colToCheck <= 5) {
+     const slotToCheck = rows[rowToCheck][colToCheck];
     if (getSlotColor(slotToCheck) === color) {
         winningSlots.push(slotToCheck);
-        colToCheck--;
+        rowToCheck++;
  } else{
      break;
  }  
 }
 
+let  hasConnectedFour = checkWinningSlots(winningSlots);
+if (hasConnectedFour) return;
+
+
+
+//diagonal win check
+
+
+let winningSlots = [slot];
+let rowToCheck = rowIndex +1;
+let colToCheck = colIndex -1;
+while (colToCheck >= 0 && rowToCheck <= 5){
+    const slotToCheck = rows[rowToCheck][colToCheck];
+   if (getSlotColor(slotToCheck) === color) {
+       winningSlots.push(slotToCheck);
+       rowToCheck++;
+       colToCheck--; 
+} else{
+    break;
+}
+}
+rowToCheck = rowIndex -1;
+let colToCheck = colIndex -1;
+while (colToCheck <= 6 && rowToCheck >= 0) {
+    const slotToCheck = rows[rowToCheck][colToCheck];
+   if (getSlotColor(slotToCheck) === color) {
+       winningSlots.push(slotToCheck);
+       rowToCheck--;
+       colToCheck++;;
+} else{
+    break;
+}  
+}
 let  hasConnectedFour = checkWinningSlots(winningSlots);
 if (hasConnectedFour) return;
 

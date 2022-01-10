@@ -37,16 +37,17 @@ let yellowTurn = true;
 
 
 //Functions
-const getClassListArray =(slot) => {
+const getClassListArray = (slot) => {
     const classList = slot.classList;
     return [...classList];
 };
 const getSlotLocation = (slot) => {
     const classList = getClassListArray(slot);
+
     const rowClass = classList.find(slotClass => slotClass.includes('row'));
     const colClass = classList.find(slotClass => slotClass.includes('col'));
-    const rowIndex = rowClass[''];
-    const colIndex = colClass[''] ;  
+    const rowIndex = rowClass[4];
+    const colIndex = colClass[4] ;  
     const rowNumber = parseInt(rowIndex, 10); 
     const colNumber = parseInt(colIndex, 10);  
 
@@ -54,33 +55,33 @@ const getSlotLocation = (slot) => {
 };
 
 const getFirstAvailableColumnSlot = (colIndex) => {
-const collumn = columns[colIndex];
+const column = columns[colIndex];
 const columnNoTopSlot = column.slice(0, 6);
 
 for (const slot of columnNoTopSlot) {
     const classList = getClassListArray(slot);
-    if (!classList.includes('yellow') && !classList.indluced('red')) {
+    if (!classList.includes('yellow') && !classList.includes('red')) {
         return slot;
     }
 }
 return null;
 };
+const switchSlotHover = (colIndex) => {
+    const topHiddenSlot = topHiddenSlots[colIndex];
+        topHiddenSlot.classList.remove(yellowTurn ? 'yellow' : 'red');
+};
 
-const getSlotColor = (slot) => {
+const getSlotColour = (slot) => {
     const classList = getClassListArray(slot);
     if (classList.includes('yellow')) return 'yellow';
     if (classList.includes('red')) return 'red';
     return null;
 };
 
-const switchSlotHover = (colIndex) => {
-    const topHiddenSlot = topHiddenSlots[colIndex];
-        topHiddenSlot.classList.remove(yellowTurn ? 'yellow' : 'red');
-};
-
 
 const checkWinningSlots = (slots) => {
-    if(slots.length <4) return false;
+    if(slots.length < 4) return false;
+
         gameActive = false;
         for (const slot of slots) {
             slot.classList.add('win');
@@ -94,9 +95,9 @@ const checkWinningSlots = (slots) => {
 // Checking game status to determine if 4 in a row for winner
 
 const checkGameStatus = (slot) => {
-     const color = getSlotColor(slot);
-     if (!color) return 
-     const [rowIndex, colIndex] = getSlotLocation(slot)
+     const colour = getSlotColour(slot);
+     if (!colour) return 
+     const [rowIndex, colIndex] = getSlotLocation(slot);
 
      //Horizontal check method
  let winningSlots = [slot];
@@ -104,103 +105,145 @@ const checkGameStatus = (slot) => {
  let colToCheck = colIndex -1;
  while (colToCheck >= 0) {
      const slotToCheck = rows[rowToCheck][colToCheck]; // this set the slot to check the one cell associated with these two parameters that have previously been assigned memory within their respective arrays. 
-    if (getSlotColor(slotToCheck) === color) {
+    if (getSlotColour(slotToCheck) === colour) {
         winningSlots.push(slotToCheck);
         colToCheck--;
- } else{
+ } else {
      break;
  }
 }
 colToCheck = colIndex +1;
  while (colToCheck <= 6) {
      const slotToCheck = rows[rowToCheck][colToCheck];
-    if (getSlotColor(slotToCheck) === color) {
+    if (getSlotColour(slotToCheck) === colour) {
         winningSlots.push(slotToCheck);
         colToCheck++;
- } else{
+ } else {
      break;
  }  
 }
-
 let  hasConnectedFour = checkWinningSlots(winningSlots);
 if (hasConnectedFour) return;
 
 // Vertical Win Check Method
-
- let winningSlots = [slot];
- let rowToCheck = rowIndex -1;  // this checks from bottom to top.
- let colToCheck = colIndex;
+winningSlots = [slot];
+rowToCheck = rowIndex -1;  // this checks from bottom to top.
+colToCheck = colIndex;
  while (rowToCheck >= 0) {
      const slotToCheck = rows[rowToCheck][colToCheck];
-    if (getSlotColor(slotToCheck) === color) {
+    if (getSlotColour(slotToCheck) === colour) {
         winningSlots.push(slotToCheck);
         rowToCheck--; //-- means to decrement. 
- } else{
+ } else {
      break;
  }
 }
-rowToCheck = rowIndex+1;
- while (colToCheck <= 5) {
+rowToCheck = rowIndex +1;
+ while (rowToCheck <= 5) {
      const slotToCheck = rows[rowToCheck][colToCheck];
-    if (getSlotColor(slotToCheck) === color) {
+    if (getSlotColour(slotToCheck) === colour) {
         winningSlots.push(slotToCheck);
         rowToCheck++;
- } else{
+ } else {
      break;
  }  
 }
-
-let  hasConnectedFour = checkWinningSlots(winningSlots);
+hasConnectedFour = checkWinningSlots(winningSlots);
 if (hasConnectedFour) return;
 
 
+//diagonal win check left to right
 
-//diagonal win check
-
-
-let winningSlots = [slot];
-let rowToCheck = rowIndex +1;
-let colToCheck = colIndex -1;
+winningSlots = [slot];
+rowToCheck = rowIndex +1;
+colToCheck = colIndex -1;
 while (colToCheck >= 0 && rowToCheck <= 5){
     const slotToCheck = rows[rowToCheck][colToCheck];
-   if (getSlotColor(slotToCheck) === color) {
+   if (getSlotColour(slotToCheck) === colour) {
        winningSlots.push(slotToCheck);
        rowToCheck++;
        colToCheck--; 
-} else{
+} else {
     break;
-}
+  }
 }
 rowToCheck = rowIndex -1;
-let colToCheck = colIndex -1;
+colToCheck = colIndex -1;
 while (colToCheck <= 6 && rowToCheck >= 0) {
     const slotToCheck = rows[rowToCheck][colToCheck];
-   if (getSlotColor(slotToCheck) === color) {
+   if (getSlotColour(slotToCheck) === colour) {
        winningSlots.push(slotToCheck);
        rowToCheck--;
        colToCheck++;;
-} else{
+} else {
     break;
-}  
+  }  
 }
-let  hasConnectedFour = checkWinningSlots(winningSlots);
+hasConnectedFour = checkWinningSlots(winningSlots);
 if (hasConnectedFour) return;
 
+
+//diagonal win check right to left 
+
+winningSlots = [slot];
+rowToCheck = rowIndex -1;
+colToCheck = colIndex -1;
+while (colToCheck >= 0 && rowToCheck >= 0){
+    const slotToCheck = rows[rowToCheck][colToCheck];
+   if (getSlotColour(slotToCheck) === colour) {
+       winningSlots.push(slotToCheck);
+       rowToCheck--;
+       colToCheck--; 
+} else {
+    break;
+  }
+}
+rowToCheck = rowIndex +1;
+colToCheck = colIndex +1;
+while (colToCheck <= 6 && rowToCheck <= 5) {
+    const slotToCheck = rows[rowToCheck][colToCheck];
+   if (getSlotColour(slotToCheck) === colour) {
+       winningSlots.push(slotToCheck);
+       rowToCheck++;
+       colToCheck++;;
+} else {
+    break;
+  }  
+}
+hasConnectedFour = checkWinningSlots(winningSlots);
+if (hasConnectedFour) return;
+
+//Tie check
+const rowsWithoutTop = rows.slice(0, 6);
+for (const row of rowsWithoutTop) {
+    for (const slot of row) {
+        const classList = getClassLIstArray(slot);
+        if (!classList.includes('yellow') && !classList.includes('red')) {
+            return;
+        }
+    }
+}
+gameActive = false;
+statusSpan.textContent = "Game is a tie!";
+};
 
 // Event Handlers
 
 const handleSlotMouseOver = (e) => {
+    if (!gameActive) return;
     const slot = e.target;
-    
     const [rowIndex, colIndex] = getSlotLocation(slot);
+
     const topHiddenSlot = topHiddenSlots[colIndex];
         topHiddenSlot.classList.add(yellowTurn ? 'yellow' : 'red');
     }; 
+
     const handleSlotMouseOff = (e) => {
         const slot = e.target;
         const [rowIndex, colIndex] = getSlotLocation(slot);
         switchSlotHover(colIndex)
     };
+
 
 const handleSlotClick = (e) => {
     const slot = e.target;
@@ -215,11 +258,12 @@ const handleSlotClick = (e) => {
     yellowTurn =!yellowTurn; // this will flip the colour of the coin for next players turn, also need to add event handler for flipping the top row hover.  
     switchSlotHover(colIndex);
 
-    if(gameActive) {}
+    if(gameActive) {
     const topHiddenSlot = topHiddenSlots[colIndex];
     topHiddenSlot.classList.add(yellowTurn ? 'yellow' : 'red');
     }
 };
+
 
 // Adding Event Listeners   
     //loop created to loop through array of row arrays
@@ -228,11 +272,10 @@ for(const row of rows) {
         slot.addEventListener('mouseover', handleSlotMouseOver);
         slot.addEventListener('mouseout', handleSlotMouseOff);
         slot.addEventListener('click', handleSlotClick);
-
     }
 }
 
-resetButton.addEventListened('click', () => {
+resetButton.addEventListener('click', () => {
     for (const row of rows) {
         for (const slot of row) {
             slot.classList.remove('red');
@@ -240,33 +283,7 @@ resetButton.addEventListened('click', () => {
             slot.classList.remove('win');
         }
     }
-    gameIsLive = true;
+    gameActive = true;
     yellowTurn = true;
     statusSpan.textContent = '';
-} )
-
-$(document).ready(function() {
-    var player = 1;
-    var winner = 0;
-    var colours = {}; 
-    colours[-1] = "red";
-    colours[1] = "blue";
-    var count = 0;
-
-    $(".slot").each(function() {
-        $(this).attribute("id", count);
-        $(this).attribute("data-player", 0);
-        count++;
-
-        // allow cell to be attirubuted player data. 
-
-        $(this).addEventListener('click', function() {
-            if(isValid($(this).attribute("id"))) {
-                $(this).css("background-color", colours[player]);
-                $(this).attribute("data-player", player);
- 
-                player *= -1;  // this should change between each player at end of each click
-            }
-        });
-    })
-})};
+} );
